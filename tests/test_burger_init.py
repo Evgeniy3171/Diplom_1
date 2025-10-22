@@ -1,5 +1,6 @@
 import pytest
 from praktikum.burger import Burger
+from tests.data import TestData
 
 
 class TestBurgerInit:

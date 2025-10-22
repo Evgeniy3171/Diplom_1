@@ -1,16 +1,12 @@
 import pytest
 from unittest.mock import Mock
+from tests.data import TestData
 
 
 class TestBurgerGetPrice:
     """Тесты для метода get_price класса Burger"""
     
-    @pytest.mark.parametrize("bun_price,ingredient_prices,expected_total", [
-        (100, [50, 30, 20], 300),  # 100*2 + 50+30+20 = 200+100=300 (было 330 - ошибка)
-        (50, [10, 15], 125),       # 50*2 + 10+15 = 100+25=125
-        (80, [], 160),             # Только булочка: 80*2=160
-        (200, [100, 100, 100], 700), # 200*2 + 100*3 = 400+300=700
-    ])
+    @pytest.mark.parametrize("bun_price,ingredient_prices,expected_total", TestData.EXPECTED_PRICES)
     def test_get_price_calculation(self, sample_burger, bun_price, ingredient_prices, expected_total):
         """Параметризованный тест расчета общей стоимости"""
         # Мок булочки
@@ -45,13 +41,15 @@ class TestBurgerGetPrice:
         from praktikum.bun import Bun
         from praktikum.ingredient import Ingredient
         from praktikum.ingredient_types import INGREDIENT_TYPE_SAUCE, INGREDIENT_TYPE_FILLING
+        from tests.data import TestData
         
-        bun = Bun("red bun", 300)
-        sauce = Ingredient(INGREDIENT_TYPE_SAUCE, "chili sauce", 300)
-        filling = Ingredient(INGREDIENT_TYPE_FILLING, "dinosaur", 200)
+        bun = Bun(TestData.BUN_NAME_RED, TestData.BUN_PRICE_RED)
+        sauce = Ingredient(INGREDIENT_TYPE_SAUCE, TestData.SAUCE_NAME_CHILI, TestData.SAUCE_PRICE_CHILI)
+        filling = Ingredient(INGREDIENT_TYPE_FILLING, TestData.FILLING_NAME_DINOSAUR, TestData.FILLING_PRICE_DINOSAUR)
         
         sample_burger.set_buns(bun)
         sample_burger.add_ingredient(sauce)
         sample_burger.add_ingredient(filling)
         
-        assert sample_burger.get_price() == 1100  # 300*2 + 300 + 200
+        expected_price = TestData.BUN_PRICE_RED * 2 + TestData.SAUCE_PRICE_CHILI + TestData.FILLING_PRICE_DINOSAUR
+        assert sample_burger.get_price() == expected_price
